@@ -245,9 +245,9 @@
                 filter.render($container, $colHeader.html(), this.getColumnData(col));
 
                 if (filter.isServerSide()) {
-                    filter.getFilterDOM().on('change.filters.dt', $.proxy(this.onServerFilterChange, this));
+                    filter.getFilterDOM().on('update.filters.dt', $.proxy(this.onServerFilterChange, this));
                 } else {
-                    filter.getFilterDOM().on('change.filters.dt', $.proxy(this.onClientFilterChange, this));
+                    filter.getFilterDOM().on('update.filters.dt', $.proxy(this.onClientFilterChange, this));
                 }
 
                 this.refreshFilters();

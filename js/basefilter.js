@@ -101,7 +101,7 @@
          * @returns {BaseFilter}
          */
         notifyChange: function () {
-            this.getFilterDOM().trigger('change.filters.dt', {
+            this.getFilterDOM().trigger('update.filters.dt', {
                 filter: this
             });
 
