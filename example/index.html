@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+    <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
+    <script src="../js/filters.js"></script>
+    <script src="../js/basefilter.js"></script>
+    <script src="../js/inputfilter.js"></script>
+    <script src="../js/selectfilter.js"></script>
+    <title>Datatable column filters example</title>
+</head>
+<body>
+<div style="width: 60%;">
+    <div id="cityFilter" style="margin-bottom: 50px">
+        <span>This select filters the 'city' column</span>
+    </div>
+    <table id="exampleTable" class="display">
+        <thead>
+        <tr>
+            <th>
+                Country
+            </th>
+            <th>
+                City
+            </th>
+            <th>
+                Language
+            </th>
+            <th>
+                Comment
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                Japan
+            </td>
+            <td>
+                Kyoto
+            </td>
+            <td>
+                Japanese
+            </td>
+            <td>
+                Very beautiful city!
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Japan
+            </td>
+            <td>
+                Osaka
+            </td>
+            <td>
+                Japanese
+            </td>
+            <td>
+                Huge city..
+            </td>
+        </tr>
+        <tr>
+            <td>
+                France
+            </td>
+            <td>
+                Paris
+            </td>
+            <td>
+                French
+            </td>
+            <td>
+                I went there last year
+            </td>
+        </tr>
+        <tr>
+            <td>
+                United Kingdom
+            </td>
+            <td>
+                London
+            </td>
+            <td>
+                N/A
+            </td>
+            <td>
+                Expensive city
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        new $.fn.DataTable.Filters('#exampleTable', [
+            new $.fn.DataTable.SelectFilter({
+                column: 0,
+                allText: 'All countries'
+            }),
+            new $.fn.DataTable.SelectFilter({
+                column: 1,
+                multiple: true,
+                showFilter: function($dom) {
+                    $('#cityFilter').append($dom);
+                }
+            }),
+            new $.fn.DataTable.SelectFilter({
+                column: 2,
+                filterOptions: function(option) {
+                    return option != 'N/A';
+                }
+            }),
+            new $.fn.DataTable.InputFilter({
+                column: 3
+            }),
+        ]);
+
+        $('#exampleTable').dataTable();
+    });
+</script>
+</html>
