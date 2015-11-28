@@ -75,8 +75,8 @@
              * @returns {Filters}
              */
             registerTableListener: function () {
-                this.$dom.on('preInit.dt', this.onDataTablePreInit)
-                    .on('init.dt', this.onDataTableInit);
+                this.$dom.on('preInit.dt', $.proxy(this.onDataTablePreInit, this))
+                    .on('init.dt', $.proxy(this.onDataTableInit, this));
 
                 return this;
             },
@@ -87,7 +87,7 @@
              * @returns {Filters}
              */
             registerAjaxListener: function () {
-                this.$dom.on('xhr.dt', this.refreshFilters);
+                this.$dom.on('xhr.dt', $.proxy(this.refreshFilters, this));
 
                 return this;
             },
@@ -156,7 +156,7 @@
                 this.$header = $(this.tableAPI.context[0].nTHead);
                 this.url = this.tableAPI.ajax.url();
 
-                $.map(this.filters, this.applyFilter);
+                $.map(this.filters, $.proxy(this.applyFilter, this));
 
                 return this;
             },
@@ -226,7 +226,7 @@
              * @returns {Filters}
              */
             renderFilters: function () {
-                $.map(this.filters, this.renderFilter);
+                $.map(this.filters, $.proxy(this.renderFilter, this));
 
                 return this;
             },

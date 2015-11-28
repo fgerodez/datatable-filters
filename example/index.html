@@ -112,13 +112,14 @@
             }),
             new $.fn.DataTable.SelectFilter({
                 column: 2,
+                allText: 'All languages',
                 filterOptions: function(option) {
                     return option != 'N/A';
                 }
             }),
             new $.fn.DataTable.InputFilter({
                 column: 3
-            }),
+            })
         ]);
 
         $('#exampleTable').dataTable();
