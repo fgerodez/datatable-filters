@@ -3,13 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+    <script data-main="main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.js"></script>
 
-    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-    <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
-    <script src="../js/filters.js"></script>
-    <script src="../js/basefilter.js"></script>
-    <script src="../js/inputfilter.js"></script>
-    <script src="../js/selectfilter.js"></script>
     <title>Datatable column filters example</title>
 </head>
 <body>
@@ -96,33 +91,4 @@
 </div>
 
 </body>
-<script type="text/javascript">
-    $(document).ready(function () {
-        new $.fn.DataTable.Filters('#exampleTable', [
-            new $.fn.DataTable.SelectFilter({
-                column: 0,
-                allText: 'All countries'
-            }),
-            new $.fn.DataTable.SelectFilter({
-                column: 1,
-                multiple: true,
-                showFilter: function($dom) {
-                    $('#cityFilter').append($dom);
-                }
-            }),
-            new $.fn.DataTable.SelectFilter({
-                column: 2,
-                allText: 'All languages',
-                filterOptions: function(option) {
-                    return option != 'N/A';
-                }
-            }),
-            new $.fn.DataTable.InputFilter({
-                column: 3
-            })
-        ]);
-
-        $('#exampleTable').dataTable();
-    });
-</script>
 </html>

@@ -12,8 +12,8 @@
     "js/selectfilter.js"
   ],
   "dependencies": {
-    "jquery": "1.11.3",
-    "datatables.net": "1.10.10"
+    "jquery": ">=1.7.0",
+    "datatables.net": ">=1.10.0"
   },
   "moduleType": [
     "amd",

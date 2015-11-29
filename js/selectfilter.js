@@ -1,7 +1,7 @@
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD
-        define(['jquery', 'datatables.net', './basefilter'], function ($) {
+        define(['jquery', 'datatables', './basefilter'], function ($) {
             return factory($);
         });
     }
