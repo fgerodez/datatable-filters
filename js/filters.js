@@ -10,10 +10,6 @@
         factory(jQuery);
     }
 }(
-    /**
-     * @param $ {jQuery}
-     * @returns {Filters}
-     */
     function ($) {
         'use strict';
 
