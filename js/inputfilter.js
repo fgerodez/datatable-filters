@@ -1,15 +1,21 @@
 (function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD
-        define(['jquery', 'datatables', './basefilter'], function ($) {
+        define(['jquery', './basefilter'], function ($) {
             return factory($);
         });
+    } else if (typeof exports === 'object') {
+        // CommonJS
+        var $ = require('jquery');
+        var BaseFilter = require('./basefilter');
+
+        module.exports = factory($, BaseFilter);
     }
     else {
         // Browser
-        factory(jQuery);
+        factory(jQuery, jQuery.fn.DataTable.BaseFilter);
     }
-}(function ($) {
+}(function ($, BaseFilter) {
     'use strict';
 
     /**
@@ -26,7 +32,7 @@
         }, this));
     };
 
-    $.extend(InputFilter.prototype, $.fn.dataTable.BaseFilter, {
+    $.extend(InputFilter.prototype, BaseFilter, {
 
         render: function ($container, header) {
             this.$dom.attr('placeholder', header);

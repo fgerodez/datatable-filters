@@ -4,6 +4,12 @@
         define(['jquery', 'datatables'], function ($) {
             return factory($);
         });
+    } else if (typeof exports === 'object') {
+        // CommonJS
+        var $ = require('jquery');
+        require('datatables.net')(window, $);
+
+        module.exports = factory($);
     }
     else {
         // Browser
