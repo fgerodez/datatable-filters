@@ -34,7 +34,7 @@ $.extend(SelectFilter.prototype, BaseFilter, {
      */
     _createSelect: function () {
         if (this.src) {
-            return $(this.src).show();
+            return $(this.src);
         }
 
         var $select = $('<select class="filtre"/>');
@@ -64,7 +64,7 @@ $.extend(SelectFilter.prototype, BaseFilter, {
         $.each(procData, $.proxy(function (key, value) {
             var $option = $('<option/>').val(value).text(value);
 
-            if ($.inArray(value, this.selected) > -1 || data.length == 1) {
+            if (this.multiple || $.inArray(value, this.selected) > -1) {
                 $option.attr('selected', 'selected');
             }
 

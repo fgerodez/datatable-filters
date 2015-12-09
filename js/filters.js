@@ -18,12 +18,11 @@ var InputFilter = require('./inputfilter');
  */
 var Filters = function (settings) {
     this.tableAPI = new $.fn.dataTable.Api(settings);
-    this.table = $(this.tableAPI.context[0]);
-    this.$header = $(this.table[0].nTHead);
+    this.$header = $(this.tableAPI.table().header());
     this.url = this.tableAPI.ajax.url();
+
     var filters = this.filters;
     var builders = this.builders;
-
     $.each(settings.aoColumns, function (col, param) {
         if (param.filter) {
             var options = $.extend({column: col}, param.filter.options);
@@ -32,7 +31,7 @@ var Filters = function (settings) {
     });
 
     $.map(this.filters, $.proxy(this.applyFilter, this));
-    this.table.on('init.dt', $.proxy(this.onDataTableInit(), this));
+    this.tableAPI.on('init', $.proxy(this.onDataTableInit, this));
 };
 
 $.extend(Filters.prototype, {
@@ -66,7 +65,7 @@ $.extend(Filters.prototype, {
      * @returns {Filters}
      */
     registerAjaxListener: function () {
-        this.table.on('xhr.dt', $.proxy(this.refreshFilters, this));
+        this.tableAPI.on('xhr', $.proxy(this.refreshFilters, this));
 
         return this;
     },
@@ -126,7 +125,9 @@ $.extend(Filters.prototype, {
     },
 
     /**
-     * @see this.registerTableListener
+     * Actions to execute when the datatable is done initializing.
+     * Creates the filter header row, registers ajax listeners and
+     * renders filters
      *
      * @returns {Filters}
      */
@@ -137,7 +138,7 @@ $.extend(Filters.prototype, {
     },
 
     /**
-     * Each time a client-side filter changes, applies its new value and refreshes all the filters
+     * When a client-side filter changes, applies its new value
      *
      * @param event {Event} event object
      * @param params {Object} event params
@@ -152,7 +153,7 @@ $.extend(Filters.prototype, {
     },
 
     /**
-     * Each time a client-side filter changes, applies its new value and refreshes all the filters
+     * When a server-side filter changes, applies its new value and refreshes all the filters
      *
      * @return {Filters}
      */
@@ -169,7 +170,7 @@ $.extend(Filters.prototype, {
     },
 
     /**
-     * Apply the filter value for the given column
+     * Apply the filter value to the related column
      *
      * @param filter {BaseFilter} The filter object
      *
