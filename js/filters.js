@@ -192,6 +192,7 @@ $.extend(Filters.prototype, {
      */
     renderFilters: function () {
         $.map(this.filters, $.proxy(this.renderFilter, this));
+        this.refreshFilters();
 
         return this;
     },
@@ -214,8 +215,6 @@ $.extend(Filters.prototype, {
         } else {
             filter.getFilterDOM().on('update.filters.dt', $.proxy(this.onClientFilterChange, this));
         }
-
-        this.refreshFilters();
     },
 
     /**
