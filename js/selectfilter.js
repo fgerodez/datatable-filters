@@ -15,16 +15,6 @@ var SelectFilter = function (config) {
 
     this.$dom = this._createSelect().on('change', $.proxy(function () {
         this.selected = this._getSelection();
-
-        /*
-         * This can only be true with multiselects. In this case we override
-         * the selected value with a whitespace to hide all the data. (The regex
-         * will only match cells containing single whitespaces)
-         */
-        if (this.selected.length == 0) {
-            this.selected = [' '];
-        }
-
         this.notifyChange();
     }, this));
 };
@@ -96,6 +86,22 @@ $.extend(SelectFilter.prototype, BaseFilter, {
      * with a pipe character
      */
     getQuery: function () {
+        if (this.selected.length == 0)
+            return '$^';
+
+        return this.selected.map(function (option) {
+            if (option.value == '') {
+                return '';
+            } else {
+                return '^' + $.fn.dataTable.util.escapeRegex(option.value) + '$';
+            }
+        }).join('|');
+    },
+
+    getInitialQuery: function() {
+        if (this.src && this.multiple && this.selected.length == 0)
+            return '$^'; //Matches nothing, hides everything if no option is selected
+
         return this.selected.map(function (option) {
             if (option.value == '') {
                 return '';

@@ -30,7 +30,7 @@ var Filters = function (settings) {
         }
     });
 
-    $.map(this.filters, $.proxy(this.applyFilter, this));
+    $.map(this.filters, $.proxy(this.applyInitialFilter, this));
     this.tableAPI.on('init', $.proxy(this.onDataTableInit, this));
 };
 
@@ -153,7 +153,7 @@ $.extend(Filters.prototype, {
     },
 
     /**
-     * When a server-side filter changes, applies its new value and refreshes all the filters
+     * When a server-side filter changes, builds the new ajax query and refreshes the table
      *
      * @return {Filters}
      */
@@ -170,7 +170,7 @@ $.extend(Filters.prototype, {
     },
 
     /**
-     * Apply the filter value to the related column
+     * Applies the filter value to the related column
      *
      * @param filter {BaseFilter} The filter object
      *
@@ -179,6 +179,20 @@ $.extend(Filters.prototype, {
     applyFilter: function (filter) {
         this.tableAPI.column(filter.getColumn()).search(
             filter.getQuery(),
+            filter.isRegexMatch()
+            , false);
+
+        return this;
+    },
+
+    /**
+     *
+     * @param filter
+     * @returns {Filters}
+     */
+    applyInitialFilter: function (filter) {
+        this.tableAPI.column(filter.getColumn()).search(
+            filter.getInitialQuery(),
             filter.isRegexMatch()
             , false);
 

@@ -73,6 +73,15 @@ var BaseFilter = $.extend({}, {
     },
 
     /**
+     * @returns {String} The filter string to be applied before the datatable is
+     * done initializing. It can be useful to prefilter data base on fixed filters.
+     * Default behavior is the same as getQuery.
+     */
+    getInitialQuery: function() {
+        return this.getQuery();
+    },
+
+    /**
      * @returns {String} The request parameter associated with this filter (in the form key=param,
      * only used for server side filters)
      */
