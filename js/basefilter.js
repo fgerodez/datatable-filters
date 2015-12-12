@@ -10,7 +10,7 @@ var $ = require('jquery');
  */
 var BaseFilter = $.extend({}, {
 
-    column: 0,
+    column: undefined,
 
     /**
      * The filter root dom node
@@ -24,7 +24,7 @@ var BaseFilter = $.extend({}, {
      *
      * @param $container {jQuery} The datatable header dom node inside which the filter can be rendered
      * @param header {String} The column header text
-     * @param data {Array<String>} The complete (unfiltered) column data
+     * @param data {jQuery} The complete (unfiltered) column data
      */
     render: function ($container, header, data) {
         this.showFilter(this.$dom, $container, header);

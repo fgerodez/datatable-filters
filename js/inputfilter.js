@@ -19,7 +19,7 @@ var InputFilter = function (config) {
 
 $.extend(InputFilter.prototype, BaseFilter, {
 
-    render: function ($container, header) {
+    render: function ($container, header, data) {
         this.$dom.attr('placeholder', header);
         this.showFilter(this.$dom, $container, header);
     },

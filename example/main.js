@@ -14,9 +14,8 @@ $(document).ready(function () {
                 },
                 {
                     filter: {
-                        type: 'select',
+                        type: 'multiselect',
                         options: {
-                            multiple: true,
                             allText: 'Tous',
                             showFilter: function ($dom) {
                                 $('#cityFilter').append($dom);

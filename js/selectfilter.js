@@ -22,8 +22,6 @@ var SelectFilter = function (config) {
 $.extend(SelectFilter.prototype, BaseFilter, {
     selected: [],
 
-    multiple: false,
-
     allText: undefined,
 
     /**
@@ -37,20 +35,14 @@ $.extend(SelectFilter.prototype, BaseFilter, {
             return $(this.src);
         }
 
-        var $select = $('<select class="filtre"/>');
-
-        if (this.multiple) {
-            $select.attr('multiple', 'multiple');
-        }
-
-        return $select
+        return $('<select class="filtre"/>');
     },
 
     /**
      * Populates the select's data. The select is first emptied before being
      * populated with the new options.
      *
-     * @param data {Array<String>} The data to add to the select
+     * @param data {jQuery} The data to add to the select
      */
     _addOptions: function (data) {
         this.$dom.empty();
@@ -64,7 +56,7 @@ $.extend(SelectFilter.prototype, BaseFilter, {
         $.each(procData, $.proxy(function (key, value) {
             var $option = $('<option/>').val(value).text(value);
 
-            if (this.multiple || $.inArray(value, this.selected) > -1) {
+            if ($.inArray(value, this.selected) > -1) {
                 $option.attr('selected', 'selected');
             }
 
@@ -73,7 +65,7 @@ $.extend(SelectFilter.prototype, BaseFilter, {
     },
 
     _getSelection: function () {
-        return this.$dom.find('option:selected').toArray();
+        return this.$dom.val();
     },
 
     isRegexMatch: function () {
@@ -86,29 +78,10 @@ $.extend(SelectFilter.prototype, BaseFilter, {
      * with a pipe character
      */
     getQuery: function () {
-        if (this.selected.length == 0)
-            return '$^';
+        if (this.selected == '')
+            return '';
 
-        return this.selected.map(function (option) {
-            if (option.value == '') {
-                return '';
-            } else {
-                return '^' + $.fn.dataTable.util.escapeRegex(option.value) + '$';
-            }
-        }).join('|');
-    },
-
-    getInitialQuery: function() {
-        if (this.src && this.multiple && this.selected.length == 0)
-            return '$^'; //Matches nothing, hides everything if no option is selected
-
-        return this.selected.map(function (option) {
-            if (option.value == '') {
-                return '';
-            } else {
-                return '^' + $.fn.dataTable.util.escapeRegex(option.value) + '$';
-            }
-        }).join('|');
+        return '^' + $.fn.dataTable.util.escapeRegex(this.selected) + '$';
     },
 
     /**
@@ -117,7 +90,9 @@ $.extend(SelectFilter.prototype, BaseFilter, {
      */
     render: function ($container, header, data) {
         this.$dom.attr('name', header);
-        this.multiple && this._addOptions(data);
+
+        if (!this.src)
+            this._addOptions(data);
 
         this.showFilter(this.$dom, $container, header);
     },
@@ -126,7 +101,7 @@ $.extend(SelectFilter.prototype, BaseFilter, {
      * @see BaseFilter
      */
     refresh: function (data) {
-        if (this.src || this.multiple)
+        if (this.src)
             return;
 
         this._addOptions(data);

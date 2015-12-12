@@ -4,24 +4,22 @@ var $ = require('jquery');
 require('datatables.net')(window, $);
 var SelectFilter = require('./selectfilter');
 var InputFilter = require('./inputfilter');
+var MultiSelect = require('./multiselectfilter');
 
 /**
  * Filters is a component that manages a list of filters object inside
  * a datatable header row.
  *
  * This constructor binds listeners to various datatable events.
- * it must be called <b>before</b> the datatable initialization (
- * the events are only fired once)
  *
- * @param tableSelector {String} selector for the datatable
- * @param filters {Array} Array of filter objects to add
+ * @param settings {Array} settings array used to create the datatable
  */
 var Filters = function (settings) {
     this.tableAPI = new $.fn.dataTable.Api(settings);
     this.$header = $(this.tableAPI.table().header());
     this.url = this.tableAPI.ajax.url();
 
-    var filters = this.filters;
+    var filters = [];
     var builders = this.builders;
     $.each(settings.aoColumns, function (col, param) {
         if (param.filter) {
@@ -30,15 +28,17 @@ var Filters = function (settings) {
         }
     });
 
-    $.map(this.filters, $.proxy(this.applyInitialFilter, this));
-    this.tableAPI.on('init', $.proxy(this.onDataTableInit, this));
+    this.filters = filters;
+    this.filters.forEach(this.applyInitialFilter, this);
+    this.tableAPI.on('init', this.onDataTableInit.bind(this));
 };
 
 $.extend(Filters.prototype, {
 
     builders: {
         'select': SelectFilter,
-        'input': InputFilter
+        'input': InputFilter,
+        'multiselect': MultiSelect
     },
 
     /**
@@ -60,12 +60,14 @@ $.extend(Filters.prototype, {
     url: '',
 
     /**
-     * Refreshes filters for every ajax request
+     * Refreshes filters after each ajax request
      *
      * @returns {Filters}
      */
     registerAjaxListener: function () {
-        this.tableAPI.on('xhr', $.proxy(this.refreshFilters, this));
+        this.tableAPI.on('xhr', $.proxy(function () {
+            this.tableAPI.one('preDraw', $.proxy(this.refreshFilters, this));
+        }, this));
 
         return this;
     },
@@ -84,7 +86,7 @@ $.extend(Filters.prototype, {
     setupHeaderRow: function () {
         var $filterHeader = $('<tr class="filters"></tr>');
 
-        $.each(this.tableAPI.columns(':visible').header(), function () {
+        this.tableAPI.columns(':visible').header().each(function () {
             $filterHeader.append('<th class="fond-header"></th>');
         });
 
@@ -108,6 +110,8 @@ $.extend(Filters.prototype, {
      * Retrieves the column data (current filter is ignored)
      *
      * @param col {int} The column index (0 based)
+     *
+     * @return {jQuery} The unfiltered column data
      */
     getColumnData: function (col) {
         return this.tableAPI.column(col).data().unique();
@@ -118,7 +122,7 @@ $.extend(Filters.prototype, {
      *
      * @param col {int} The column index (0 based)
      *
-     * @return An array of values
+     * @return {jQuery} The filtered column data
      */
     getFilteredColumnData: function (col) {
         return this.tableAPI.column(col, {search: 'applied'}).data().unique();
@@ -146,8 +150,7 @@ $.extend(Filters.prototype, {
      * @return {Filters}
      */
     onClientFilterChange: function (event, params) {
-        var filter = params.filter;
-        this.applyFilter(filter).drawTable();
+        this.applyFilter(params.filter).drawTable();
 
         return this;
     },
@@ -205,7 +208,7 @@ $.extend(Filters.prototype, {
      * @returns {Filters}
      */
     renderFilters: function () {
-        $.map(this.filters, $.proxy(this.renderFilter, this));
+        this.filters.forEach(this.renderFilter, this);
         this.refreshFilters();
 
         return this;
@@ -237,9 +240,9 @@ $.extend(Filters.prototype, {
      * @return {Filters}
      */
     refreshFilters: function () {
-        $.each(this.filters, $.proxy(function (idx, filter) {
+        this.filters.forEach(function (filter) {
             filter.refresh(this.getColumnData(filter.column));
-        }, this));
+        }, this);
 
         return this;
     }
