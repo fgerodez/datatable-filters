@@ -13,8 +13,6 @@ var FixedSelectFilter = $.extend({}, SelectFilter, {
     },
 
     populate: function () {
-        this._saveSelection();
-
         return this;
     },
 

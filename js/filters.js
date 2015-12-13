@@ -221,13 +221,13 @@ $.extend(Filters.prototype, {
         var $colHeader = $(this.tableAPI.column(col).header());
         var $container = this.$header.find('.fond-header:eq(' + col + ')');
 
-        filter.render($container, $colHeader.html(), this.getColumnData(col));
-
         if (filter.isServerSide()) {
             filter.register($.proxy(this.onServerFilterChange, this));
         } else {
             filter.register($.proxy(this.onClientFilterChange, this));
         }
+
+        filter.render($container, $colHeader.html(), this.getColumnData(col));
     },
 
     /**

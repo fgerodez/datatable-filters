@@ -14,7 +14,7 @@ var SimpleSelectFilter = $.extend({}, SelectFilter, {
 
     populate: function (data) {
         this._addOptions(data, this._addOption);
-        this._saveSelection();
+        this._onChange();
 
         return this;
     },

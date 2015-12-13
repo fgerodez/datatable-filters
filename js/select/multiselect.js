@@ -16,13 +16,16 @@ var MultiSelectFilter = $.extend({}, SelectFilter, {
 
     populate: function (data) {
         this._addOptions(data, this._addSelectedOption);
-        this._saveSelection();
+        this._onChange();
 
         return this;
     },
 
     update: function (data) {
-        this._addOptions(data, this._addOption);
+        if ($.inArray(this.allText, this.selected) > -1)
+            this._addOptions(data, this._addSelectedOption);
+        else
+            this._addOptions(data, this._addOption);
 
         return this;
     },
