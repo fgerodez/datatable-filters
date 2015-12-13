@@ -1,18 +1,41 @@
 var $ = require('jquery');
-require('../js/filters');
+require('../js/main');
 
 $(document).ready(function () {
-        $('#exampleTable').DataTable({
+        var table = $('#exampleTable').DataTable({
+            ajax: {
+                url: "./data.json"
+            },
+            sAjaxDataProp: '',
             columns: [
                 {
+                    data: 'email',
                     filter: {
                         type: 'select',
                         options: {
-                            allText: 'All countries'
+                            allText: 'All emails'
                         }
                     }
                 },
                 {
+                    data: 'name',
+                    filter: {
+                        type: 'input'
+                    }
+                },
+                {
+                    data: 'gender',
+                    filter: {
+                        type: 'multiselect',
+                        options: {
+                            filterOptions: function (option) {
+                                return option != 'N/A';
+                            }
+                        }
+                    }
+                },
+                {
+                    data: 'company',
                     filter: {
                         type: 'multiselect',
                         options: {
@@ -22,24 +45,12 @@ $(document).ready(function () {
                             }
                         }
                     }
-                },
-                {
-                    filter: {
-                        type: 'select',
-                        options: {
-                            allText: 'All languages',
-                            filterOptions: function (option) {
-                                return option != 'N/A';
-                            }
-                        }
-                    }
-                },
-                {
-                    filter: {
-                        type: 'input'
-                    }
                 }
             ]
+        });
+
+        $('#reloadAjax').click(function () {
+            table.ajax.url('./data2.json').ajax.reload();
         });
     }
 );

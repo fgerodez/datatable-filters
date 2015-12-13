@@ -2,89 +2,34 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.10/css/jquery.dataTables.css" rel="stylesheet" type="text/css"/>
     <title>Datatable column filters example</title>
 </head>
 <body>
 <div style="width: 60%;">
     <div id="cityFilter" style="margin-bottom: 50px">
-        <span>This select filters the 'city' column</span>
+        <span>This select filters the 'company' column</span>
     </div>
-    <table id="exampleTable" class="display">
+    <div style="margin-bottom: 20px;">
+        <button id="reloadAjax">Reload the table (adds Bill Gates)</button>
+    </div>
+    <table id="exampleTable">
         <thead>
         <tr>
             <th>
-                Country
+                Email
             </th>
             <th>
-                City
+                Name
             </th>
             <th>
-                Language
+                Gender
             </th>
             <th>
-                Comment
+                Company
             </th>
         </tr>
         </thead>
-        <tbody>
-        <tr>
-            <td>
-                Japan
-            </td>
-            <td>
-                Kyoto
-            </td>
-            <td>
-                Japanese
-            </td>
-            <td>
-                Very beautiful city!
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Japan
-            </td>
-            <td>
-                Osaka
-            </td>
-            <td>
-                Japanese
-            </td>
-            <td>
-                Huge city..
-            </td>
-        </tr>
-        <tr>
-            <td>
-                France
-            </td>
-            <td>
-                Paris
-            </td>
-            <td>
-                French
-            </td>
-            <td>
-                I went there last year
-            </td>
-        </tr>
-        <tr>
-            <td>
-                United Kingdom
-            </td>
-            <td>
-                London
-            </td>
-            <td>
-                N/A
-            </td>
-            <td>
-                Expensive city
-            </td>
-        </tr>
-        </tbody>
     </table>
 </div>
 <script src="main-fge.js"></script>

@@ -3,21 +3,13 @@
 var $ = require('jquery');
 require('datatables.net')(window, $);
 
-var SelectBackends = require('./selectbackend');
-var InputBackend = require('./inputbackend');
-var BaseFilter = require('./basefilter');
-var DynamicRenderer = require('./renderers');
-
-var SimpleSelectBackend = SelectBackends.SimpleSelectBackend;
-var MultiSelectBackend = SelectBackends.MultiSelectBackend;
-
 /**
  * Filters is a component that manages a list of filters object inside
  * a datatable header row.
  *
  * This constructor binds listeners to various datatable events.
  *
- * @param settings {Array} settings array used to create the datatable
+ * @param settings {Object} settings object used to create the datatable
  */
 var Filters = function (settings) {
     this.tableAPI = new $.fn.dataTable.Api(settings);
@@ -34,7 +26,7 @@ var Filters = function (settings) {
     });
 
     this.filters = filters;
-    this.filters.forEach(function(filter) {
+    this.filters.forEach(function (filter) {
         filter.init();
     });
     this.filters.forEach(this.applyInitialFilter, this);
@@ -44,17 +36,7 @@ var Filters = function (settings) {
 
 $.extend(Filters.prototype, {
 
-    builders: {
-        'select': function(settings) {
-            return $.extend({}, SimpleSelectBackend, BaseFilter, DynamicRenderer, settings);
-        },
-        'input': function(settings) {
-            return $.extend({}, InputBackend, BaseFilter, DynamicRenderer, settings);
-        },
-        'multiselect': function(settings) {
-            return $.extend({}, MultiSelectBackend, BaseFilter, DynamicRenderer, settings);
-        }
-    },
+    builders: {},
 
     /**
      * Table header dom node
@@ -190,7 +172,7 @@ $.extend(Filters.prototype, {
     /**
      * Applies the filter value to the related column
      *
-     * @param filter {BaseFilter} The filter object
+     * @param filter The filter object
      *
      * @return {Filters}
      */
@@ -232,7 +214,7 @@ $.extend(Filters.prototype, {
      * Asks a filter to render itself and provides an optional container
      * for filters that need to be rendered inside the datatable header row
      *
-     * @param filter {BaseFilter} The filter object
+     * @param filter The filter object
      */
     renderFilter: function (filter) {
         var col = filter.column;

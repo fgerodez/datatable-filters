@@ -1,9 +1,10 @@
 'use strict';
 
 var $ = require('jquery');
-var BaseBackend = require('./basebackend');
+var BaseFilter = require('../basefilter');
+var Filters = require('../filters');
 
-var InputBackend = $.extend({}, BaseBackend, {
+var InputFilter = $.extend({}, BaseFilter, {
 
     init: function () {
         this.$dom = $('<input class="filtre"/>');
@@ -12,8 +13,8 @@ var InputBackend = $.extend({}, BaseBackend, {
         return this;
     },
 
-    populate: function() {
-      return this;
+    populate: function () {
+        return this;
     },
 
     update: function () {
@@ -36,9 +37,13 @@ var InputBackend = $.extend({}, BaseBackend, {
         return this.$dom.val();
     },
 
-    getInitialQuery: function() {
+    getInitialQuery: function () {
         return '';
     }
 });
 
-module.exports = InputBackend;
+Filters.prototype.builders.input = function(settings) {
+  return $.extend({}, InputFilter, settings);
+};
+
+module.exports = InputFilter;
