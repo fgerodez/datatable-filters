@@ -5,15 +5,25 @@ var Filters = require('../filters');
 var SelectFilter = require('./baseselect');
 
 var MultiSelectFilter = $.extend({}, SelectFilter, {
-    init: function () {
-        this.$dom = $('<select class="filtre"/>');
 
-        this.$dom.attr('multiple', 'multiple')
-            .on('change', this._onChange.bind(this));
+    /**
+     * Initializes a multiselect dom object
+     *
+     * @returns {MultiSelectFilter}
+     */
+    init: function () {
+        this.$dom = $('<select class="filtre"/>').attr('multiple', 'multiple');
+        this.$dom.on('change', this._onChange.bind(this));
 
         return this;
     },
 
+    /**
+     * Populates the multiselect with 'selected' options by default
+     *
+     * @param data
+     * @returns {MultiSelectFilter}
+     */
     populate: function (data) {
         this._addOptions(data, this._addSelectedOption);
         this._onChange();
@@ -21,15 +31,27 @@ var MultiSelectFilter = $.extend({}, SelectFilter, {
         return this;
     },
 
+    /**
+     * If the 'all' option is selected, sets the new options as 'selected'.
+     * Otherwise, adds the options based on the filter state
+     *
+     * @param data
+     * @returns {MultiSelectFilter}
+     */
     update: function (data) {
         if ($.inArray(this.allText, this.selected) > -1)
             this._addOptions(data, this._addSelectedOption);
         else
-            this._addOptions(data, this._addOption);
+            this._addOptions(data, this._refreshOption);
 
         return this;
     },
 
+    /**
+     * This filter is dynamic, it can't be used for initial filtering
+     *
+     * @returns {string}
+     */
     getInitialQuery: function() {
         return '';
     }

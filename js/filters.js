@@ -36,6 +36,10 @@ var Filters = function (settings) {
 
 $.extend(Filters.prototype, {
 
+    /**
+     * Array of filter constructor function. Each function
+     * takes a setting object as its single parameter
+     */
     builders: {},
 
     /**
@@ -46,7 +50,7 @@ $.extend(Filters.prototype, {
 
     /**
      * Filters array
-     * @type {Array<BaseFilter>}
+     * @type {Array}
      */
     filters: [],
 
@@ -186,6 +190,8 @@ $.extend(Filters.prototype, {
     },
 
     /**
+     * Enables filters to apply an initial column filter, before
+     * any data processing/displaying is done.
      *
      * @param filter
      * @returns {Filters}
