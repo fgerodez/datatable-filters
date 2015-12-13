@@ -1,7 +1,6 @@
 'use strict';
 
 var $ = require('jquery');
-require('datatables.net')(window, $);
 
 /**
  * Filters is a component that manages a list of filters object inside

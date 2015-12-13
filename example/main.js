@@ -1,6 +1,3 @@
-var $ = require('jquery');
-require('../js/main');
-
 $(document).ready(function () {
         var table = $('#exampleTable').DataTable({
             ajax: {
