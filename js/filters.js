@@ -2,9 +2,14 @@
 
 var $ = require('jquery');
 require('datatables.net')(window, $);
-var SelectFilter = require('./selectfilter');
-var InputFilter = require('./inputfilter');
-var MultiSelect = require('./multiselectfilter');
+
+var SelectBackends = require('./selectbackend');
+var InputBackend = require('./inputbackend');
+var BaseFilter = require('./basefilter');
+var DynamicRenderer = require('./renderers');
+
+var SimpleSelectBackend = SelectBackends.SimpleSelectBackend;
+var MultiSelectBackend = SelectBackends.MultiSelectBackend;
 
 /**
  * Filters is a component that manages a list of filters object inside
@@ -24,21 +29,31 @@ var Filters = function (settings) {
     $.each(settings.aoColumns, function (col, param) {
         if (param.filter) {
             var options = $.extend({column: col}, param.filter.options);
-            filters.push(new builders[param.filter.type](options));
+            filters.push(builders[param.filter.type](options));
         }
     });
 
     this.filters = filters;
+    this.filters.forEach(function(filter) {
+        filter.init();
+    });
     this.filters.forEach(this.applyInitialFilter, this);
+
     this.tableAPI.on('init', this.onDataTableInit.bind(this));
 };
 
 $.extend(Filters.prototype, {
 
     builders: {
-        'select': SelectFilter,
-        'input': InputFilter,
-        'multiselect': MultiSelect
+        'select': function(settings) {
+            return $.extend({}, SimpleSelectBackend, BaseFilter, DynamicRenderer, settings);
+        },
+        'input': function(settings) {
+            return $.extend({}, InputBackend, BaseFilter, DynamicRenderer, settings);
+        },
+        'multiselect': function(settings) {
+            return $.extend({}, MultiSelectBackend, BaseFilter, DynamicRenderer, settings);
+        }
     },
 
     /**
@@ -180,7 +195,7 @@ $.extend(Filters.prototype, {
      * @return {Filters}
      */
     applyFilter: function (filter) {
-        this.tableAPI.column(filter.getColumn()).search(
+        this.tableAPI.column(filter.column).search(
             filter.getQuery(),
             filter.isRegexMatch()
             , false);
@@ -194,7 +209,7 @@ $.extend(Filters.prototype, {
      * @returns {Filters}
      */
     applyInitialFilter: function (filter) {
-        this.tableAPI.column(filter.getColumn()).search(
+        this.tableAPI.column(filter.column).search(
             filter.getInitialQuery(),
             filter.isRegexMatch()
             , false);
@@ -209,7 +224,6 @@ $.extend(Filters.prototype, {
      */
     renderFilters: function () {
         this.filters.forEach(this.renderFilter, this);
-        this.refreshFilters();
 
         return this;
     },
@@ -221,16 +235,16 @@ $.extend(Filters.prototype, {
      * @param filter {BaseFilter} The filter object
      */
     renderFilter: function (filter) {
-        var col = filter.getColumn();
+        var col = filter.column;
         var $colHeader = $(this.tableAPI.column(col).header());
         var $container = this.$header.find('.fond-header:eq(' + col + ')');
 
         filter.render($container, $colHeader.html(), this.getColumnData(col));
 
         if (filter.isServerSide()) {
-            filter.getFilterDOM().on('update.filters.dt', $.proxy(this.onServerFilterChange, this));
+            filter.register($.proxy(this.onServerFilterChange, this));
         } else {
-            filter.getFilterDOM().on('update.filters.dt', $.proxy(this.onClientFilterChange, this));
+            filter.register($.proxy(this.onClientFilterChange, this));
         }
     },
 
