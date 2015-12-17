@@ -243,7 +243,10 @@ $.extend(Filters.prototype, {
     refreshFilters: function () {
         this.filters.forEach(function (filter) {
             filter.refresh(this.getColumnData(filter.column));
+            this.applyFilter(filter);
         }, this);
+
+        this.drawTable();
 
         return this;
     }
