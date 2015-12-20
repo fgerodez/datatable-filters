@@ -3,6 +3,8 @@
 var $ = require('jquery');
 var Filters = require('../filters');
 var SelectFilter = require('./baseselect');
+var SimpleRenderer = require('../renderer/simple');
+var BootstrapRenderer = require('./renderer/bootstrap');
 
 var FixedSelectFilter = $.extend({}, SelectFilter, {
 
@@ -48,7 +50,11 @@ var FixedSelectFilter = $.extend({}, SelectFilter, {
 });
 
 Filters.prototype.builders.fixedselect = function(settings) {
-    return $.extend({}, FixedSelectFilter, settings);
+    return $.extend({}, FixedSelectFilter, SimpleRenderer, settings);
+};
+
+Filters.prototype.builders.fixedselectBootstrap = function(settings) {
+    return $.extend({}, FixedSelectFilter, BootstrapRenderer, settings);
 };
 
 module.exports = FixedSelectFilter;

@@ -2,9 +2,10 @@
 
 var $ = require('jquery');
 var BaseFilter = require('../basefilter');
+var SimpleRenderer = require('../renderer/simple');
 var Filters = require('../filters');
 
-var InputFilter = $.extend({}, BaseFilter, {
+var InputFilter = $.extend({}, BaseFilter, SimpleRenderer, {
 
     init: function () {
         this.$dom = $('<input class="filtre"/>');

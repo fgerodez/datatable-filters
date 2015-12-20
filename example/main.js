@@ -8,7 +8,7 @@ $(document).ready(function () {
                 {
                     data: 'email',
                     filter: {
-                        type: 'select',
+                        type: 'selectBootstrap',
                         options: {
                             allText: 'All emails'
                         }
@@ -23,7 +23,7 @@ $(document).ready(function () {
                 {
                     data: 'gender',
                     filter: {
-                        type: 'multiselect',
+                        type: 'multiselectBootstrap',
                         options: {
                             filterOptions: function (option) {
                                 return option != 'N/A';
@@ -34,9 +34,8 @@ $(document).ready(function () {
                 {
                     data: 'company',
                     filter: {
-                        type: 'multiselect',
+                        type: 'multiselectBootstrap',
                         options: {
-                            allText: 'Tous',
                             showFilter: function ($dom) {
                                 $('#cityFilter').append($dom);
                             }

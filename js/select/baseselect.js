@@ -82,6 +82,17 @@ var SelectFilter = $.extend({}, BaseFilter, {
     },
 
     /**
+     *
+     * @returns {*|Array} The array of non selected values
+     * @private
+     */
+    _getNotSelected: function() {
+        return this.$dom.find(':not(option:selected)').toArray().map(function(option) {
+            return option.value;
+        });
+    },
+
+    /**
      * For each element in the data object, creates an option element using the function
      * fnCreate
      *

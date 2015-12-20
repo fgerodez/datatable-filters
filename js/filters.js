@@ -24,13 +24,15 @@ var Filters = function (settings) {
         }
     });
 
-    this.filters = filters;
-    this.filters.forEach(function (filter) {
-        filter.init();
-    });
-    this.filters.forEach(this.applyInitialFilter, this);
+    if (filters.length > 0) {
+        this.filters = filters;
+        this.filters.forEach(function (filter) {
+            filter.init();
+        });
+        this.filters.forEach(this.applyInitialFilter, this);
 
-    this.tableAPI.on('init', this.onDataTableInit.bind(this));
+        this.tableAPI.on('init', this.onDataTableInit.bind(this));
+    }
 };
 
 $.extend(Filters.prototype, {

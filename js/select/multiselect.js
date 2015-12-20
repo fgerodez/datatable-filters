@@ -2,6 +2,8 @@
 
 var $ = require('jquery');
 var Filters = require('../filters');
+var SimpleRenderer = require('../renderer/simple');
+var BootstrapRenderer = require('./renderer/bootstrap');
 var SelectFilter = require('./baseselect');
 
 var MultiSelectFilter = $.extend({}, SelectFilter, {
@@ -39,7 +41,7 @@ var MultiSelectFilter = $.extend({}, SelectFilter, {
      * @returns {MultiSelectFilter}
      */
     update: function (data) {
-        if ($.inArray(this.allText, this.selected) > -1)
+        if ($.inArray(this.allText, this.selected) > -1 || this._getNotSelected().length == 0)
             this._addOptions(data, this._addSelectedOption);
         else
             this._addOptions(data, this._refreshOption);
@@ -58,7 +60,11 @@ var MultiSelectFilter = $.extend({}, SelectFilter, {
 });
 
 Filters.prototype.builders.multiselect = function(settings) {
-    return $.extend({}, MultiSelectFilter, settings);
+    return $.extend({}, MultiSelectFilter, SimpleRenderer, settings);
+};
+
+Filters.prototype.builders.multiselectBootstrap = function(settings) {
+    return $.extend({}, MultiSelectFilter, BootstrapRenderer, settings);
 };
 
 module.exports = MultiSelectFilter;
