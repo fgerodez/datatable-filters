@@ -2,6 +2,8 @@
 
 var $ = require('jquery');
 var BaseFilter = require('../basefilter');
+var SimpleRenderer = require('../renderer/simple');
+var BootstrapRenderer = require('./renderer/bootstrap');
 
 /**
  * SelectFilter regroups common behavior for select filters
@@ -162,4 +164,16 @@ var SelectFilter = $.extend({}, BaseFilter, {
     }
 });
 
-module.exports = SelectFilter;
+var builder = function(settings) {
+    var renderer = SimpleRenderer;
+
+    if (settings.renderer == 'bootstrap')
+        renderer = BootstrapRenderer;
+
+    return $.extend({}, this, renderer, settings);
+};
+
+module.exports = {
+    SelectFilter: SelectFilter,
+    builder: builder
+};

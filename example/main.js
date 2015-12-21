@@ -8,10 +8,9 @@ $(document).ready(function () {
                 {
                     data: 'email',
                     filter: {
-                        type: 'selectBootstrap',
-                        options: {
-                            allText: 'All emails'
-                        }
+                        type: 'select',
+                        renderer: 'bootstrap',
+                        allText: 'All emails'
                     }
                 },
                 {
@@ -23,22 +22,24 @@ $(document).ready(function () {
                 {
                     data: 'gender',
                     filter: {
-                        type: 'multiselectBootstrap',
-                        options: {
-                            filterOptions: function (option) {
-                                return option != 'N/A';
-                            }
+                        type: 'multiselect',
+                        renderer: 'bootstrap',
+                        rendererOptions: {
+                          selectAllText: 'All',
+                          includeSelectAllOption: true
+                        },
+                        filterOptions: function (option) {
+                            return option != 'N/A';
                         }
                     }
                 },
                 {
                     data: 'company',
                     filter: {
-                        type: 'multiselectBootstrap',
-                        options: {
-                            showFilter: function ($dom) {
-                                $('#cityFilter').append($dom);
-                            }
+                        type: 'multiselect',
+                        renderer: 'bootstrap',
+                        showFilter: function ($dom) {
+                            $('#cityFilter').append($dom);
                         }
                     }
                 }

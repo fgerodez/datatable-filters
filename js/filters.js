@@ -19,7 +19,7 @@ var Filters = function (settings) {
     var builders = this.builders;
     $.each(settings.aoColumns, function (col, param) {
         if (param.filter) {
-            var options = $.extend({column: col}, param.filter.options);
+            var options = $.extend({column: col}, param.filter);
             filters.push(builders[param.filter.type](options));
         }
     });
@@ -30,7 +30,6 @@ var Filters = function (settings) {
             filter.init();
         });
         this.filters.forEach(this.applyInitialFilter, this);
-
         this.tableAPI.on('init', this.onDataTableInit.bind(this));
     }
 };

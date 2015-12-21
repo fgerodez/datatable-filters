@@ -2,11 +2,9 @@
 
 var $ = require('jquery');
 var Filters = require('../filters');
-var SimpleRenderer = require('../renderer/simple');
-var BootstrapRenderer = require('./renderer/bootstrap');
-var SelectFilter = require('./baseselect');
+var BaseSelect = require('./baseselect');
 
-var MultiSelectFilter = $.extend({}, SelectFilter, {
+var MultiSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
 
     /**
      * Initializes a multiselect dom object
@@ -59,12 +57,6 @@ var MultiSelectFilter = $.extend({}, SelectFilter, {
     }
 });
 
-Filters.prototype.builders.multiselect = function(settings) {
-    return $.extend({}, MultiSelectFilter, SimpleRenderer, settings);
-};
-
-Filters.prototype.builders.multiselectBootstrap = function(settings) {
-    return $.extend({}, MultiSelectFilter, BootstrapRenderer, settings);
-};
+Filters.prototype.builders.multiselect = BaseSelect.builder.bind(MultiSelectFilter);
 
 module.exports = MultiSelectFilter;
