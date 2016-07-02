@@ -16,7 +16,7 @@ var SelectFilter = $.extend({}, BaseFilter, {
      * when no option is selected
      */
     noSelectionQuery: function () {
-        return '$^';
+        return '$.^';
     },
 
     /**
@@ -39,7 +39,7 @@ var SelectFilter = $.extend({}, BaseFilter, {
      */
     selectedQuery: function () {
         return this._getSelection().map(function (value) {
-            if (value == this.allText) {
+            if (value == this.allText  || this._getNotSelected().length === 0) {
                 return '';
             } else {
                 return '^' + $.fn.dataTable.util.escapeRegex(value) + '$';
