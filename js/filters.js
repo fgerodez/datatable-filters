@@ -112,10 +112,10 @@ $.extend(Filters.prototype, {
      *
      * @param col {int} The column index (0 based)
      *
-     * @return {jQuery} The unfiltered column data
+     * @return {jQuery} The unfiltered column rendered data
      */
     getColumnData: function (col) {
-        return this.tableAPI.column(col).data().unique();
+        return this.tableAPI.cells(null, col).render('display').unique();
     },
 
     /**
