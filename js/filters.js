@@ -17,10 +17,17 @@ var Filters = function (settings) {
 
     var filters = [];
     var builders = this.builders;
+    var renderCol = 0;
     $.each(settings.aoColumns, function (col, param) {
         if (param.filter) {
-            var options = $.extend({column: col}, param.filter);
+            var options = $.extend({
+              column: col,
+              renderColumn: renderCol
+            }, param.filter);
             filters.push(builders[param.filter.type](options));
+        }
+        if(param.bVisible) {
+          renderCol++;
         }
     });
 
@@ -225,7 +232,7 @@ $.extend(Filters.prototype, {
     renderFilter: function (filter) {
         var col = filter.column;
         var $colHeader = $(this.tableAPI.column(col).header());
-        var $container = this.$header.find('.fond-header:eq(' + col + ')');
+        var $container = this.$header.find('.fond-header:eq(' + filter.renderColumn + ')');
 
         if (filter.isServerSide()) {
             filter.register($.proxy(this.onServerFilterChange, this));
