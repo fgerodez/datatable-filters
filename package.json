@@ -19,7 +19,8 @@
   },
   "devDependencies": {
     "browserify": "latest",
-    "browserify-shim": "latest"
+    "browserify-shim": "latest",
+    "uglifyjs": "^2.4.10"
   },
   "scripts": {
     "build-debug": "browserify js/main.js -d  > dist/datatable-filters.js",
