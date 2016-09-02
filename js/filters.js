@@ -234,6 +234,12 @@ $.extend(Filters.prototype, {
         }
 
         filter.render($container, $colHeader.html(), this.getColumnData(col));
+        if(filter.className) {
+          filter.$dom.addClass(filter.className);
+        }
+        if(filter.attrs) {
+          filter.$dom.attr(filter.attrs);
+        }
     },
 
     /**
