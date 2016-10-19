@@ -133,7 +133,7 @@ $.extend(Filters.prototype, {
      * @return {jQuery} The filtered column data
      */
     getFilteredColumnData: function (col) {
-        return this.tableAPI.column(col, {search: 'applied'}).data().unique();
+        return this.tableAPI.cells(null, col, {search: 'applied'}).render('display').unique();
     },
 
     /**
@@ -151,14 +151,33 @@ $.extend(Filters.prototype, {
 
     /**
      * When a client-side filter changes, applies its new value
-     *
+     * and then refresh filters
+     * 
      * @param event {Event} event object
      * @param params {Object} event params
      *
      * @return {Filters}
      */
     onClientFilterChange: function (event, params) {
-        this.applyFilter(params.filter).drawTable();
+        this.applyFilter(params.filter);
+
+        // refresh all filters
+        // except the changed one,
+        // unless the filter is resetted.
+        var filtersToRefresh = this.filters; 
+        if(params.filter.hasValue()) {
+            filtersToRefresh = this.filters
+            .filter(function (filter) {
+              return filter.column !== params.filter.column;
+            });
+        }
+
+        filtersToRefresh.forEach(function (filter) {
+          filter.refresh(this.getFilteredColumnData(filter.column));
+          this.applyFilter(filter);
+        }, this);
+
+        this.drawTable();
 
         return this;
     },
