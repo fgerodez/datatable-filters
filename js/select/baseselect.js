@@ -16,7 +16,7 @@ var SelectFilter = $.extend({}, BaseFilter, {
      * when no option is selected
      */
     noSelectionQuery: function () {
-        return '$.^';
+        return '';
     },
 
     /**
@@ -27,10 +27,12 @@ var SelectFilter = $.extend({}, BaseFilter, {
     },
 
     /**
-     * @returns {boolean} Returns true if at least one option is selected
+     * @returns {boolean} Returns true if at least one option is selected;
+     *  If `allText` option is selected, return false
      */
     hasValue: function () {
-        return this._getSelection().length > 0;
+        var selection = this._getSelection();
+        return selection.length > 0 && selection.indexOf(this.allText) < 0;
     },
 
     /**
