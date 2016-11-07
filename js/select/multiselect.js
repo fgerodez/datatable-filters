@@ -20,12 +20,25 @@ var MultiSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
 
     /**
      * Populates the multiselect with 'selected' options by default
+     * Uses getInitialQuery as default value(s)
      *
      * @param data
      * @returns {MultiSelectFilter}
      */
     populate: function (data) {
         this._addOptions(data, this._addSelectedOption);
+
+        // Select each values returned by getInitialQuery
+        var initialQuery = this.getInitialQuery();
+        if(Array.isArray(initialQuery)) {
+          initialQuery.forEach(function (initialQuery) {
+            this.$dom.find('option[value="' + initialQuery + '"]').attr('selected', 'selected');
+          })
+        } else { // Asume initial query is a string
+            this.$dom.find('option[value="' + initialQuery + '"]').attr('selected', 'selected');
+        }
+        this._saveSelection();
+
         this._onChange();
 
         return this;
