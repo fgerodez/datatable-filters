@@ -9,6 +9,7 @@ var InputFilter = $.extend({}, BaseFilter, SimpleRenderer, {
 
     init: function () {
         this.$dom = $('<input class="filtre"/>');
+        this.$dom.val(this.getInitialQuery());
         this.$dom.on('input', this.notifyChange.bind(this));
 
         return this;
