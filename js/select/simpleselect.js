@@ -20,13 +20,16 @@ var SimpleSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
 
     /**
      * Adds all options without specifying the 'selected' flag
-     * (the first option is selected by default)
+     * If an option with `getInitialQuery` value exists, selects it,
+     * otherwise, the first option is selected by default
      *
      * @param data
      * @returns {SimpleSelectFilter}
      */
     populate: function (data) {
         this._addOptions(data, this._refreshOption);
+        this.$dom.find('option[value="' + this.getInitialQuery() + '"]').attr('selected', 'selected');
+        this._saveSelection();
         this._onChange();
 
         return this;
