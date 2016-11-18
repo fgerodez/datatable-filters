@@ -24,7 +24,7 @@ var BootstrapRenderer = {
     selectedQuery: function () {
         var $widget = this.$dom.multiselect();
 
-        if ($.inArray($widget.selectAllText, $widget.val())) {
+        if ($.inArray($widget.selectAllText, $widget.val()) > -1) {
             return '';
         } else {
             return this._getSelection().map(function (value) {
