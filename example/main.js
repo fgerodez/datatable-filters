@@ -15,6 +15,7 @@ $(document).ready(function () {
                 },
                 {
                     data: 'name',
+                    visible: false,
                     filter: {
                         type: 'input'
                     }

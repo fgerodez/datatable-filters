@@ -15,28 +15,23 @@ var Filters = function (settings) {
     this.$header = $(this.tableAPI.table().header());
     this.url = this.tableAPI.ajax.url();
 
-    var filters = [];
-    var builders = this.builders;
-    var renderCol = 0;
-    $.each(settings.aoColumns, function (col, param) {
-        if (param.filter) {
+    settings.aoColumns.forEach(function (param, col) {
+        if (param.filter && param.bVisible) {
             var options = $.extend({
-              column: col,
-              renderColumn: renderCol
+                column: col,
+                renderColumn: this.tableAPI.column.index('toVisible', col)
             }, param.filter);
-            filters.push(builders[param.filter.type](options));
-        }
-        if(param.bVisible) {
-          renderCol++;
-        }
-    });
 
-    if (filters.length > 0) {
-        this.filters = filters;
-        this.filters.forEach(function (filter) {
+            var filter = this.builders[param.filter.type](options);
+
             filter.init();
-        });
-        this.filters.forEach(this.applyInitialFilter, this);
+
+            this.applyInitialFilter(filter);
+            this.filters.push(filter);
+        }
+    }, this);
+
+    if (this.filters.length > 0) {
         this.tableAPI.on('init', this.onDataTableInit.bind(this));
     }
 };

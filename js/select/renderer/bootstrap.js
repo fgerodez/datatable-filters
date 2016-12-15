@@ -21,22 +21,6 @@ var BootstrapRenderer = {
         return this;
     },
 
-    selectedQuery: function () {
-        var $widget = this.$dom.multiselect();
-
-        if ($.inArray($widget.selectAllText, $widget.val())) {
-            return '';
-        } else {
-            return this._getSelection().map(function (value) {
-                if (value == this.allText) {
-                    return '';
-                } else {
-                    return '^' + $.fn.dataTable.util.escapeRegex(value) + '$';
-                }
-            }, this).join('|');
-        }
-    },
-
     showFilter: function($dom, $container, header, data) {
         $container.append(this.$dom);
     },
