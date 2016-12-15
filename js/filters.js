@@ -117,7 +117,7 @@ $.extend(Filters.prototype, {
      * @return {jQuery} The unfiltered column rendered data
      */
     getColumnData: function (col) {
-        return this.tableAPI.cells(null, col).render('display').unique();
+        return this.tableAPI.column(col).cache('search').unique();
     },
 
     /**
@@ -128,7 +128,7 @@ $.extend(Filters.prototype, {
      * @return {jQuery} The filtered column data
      */
     getFilteredColumnData: function (col) {
-        return this.tableAPI.column(col, {search: 'applied'}).data().unique();
+        return this.tableAPI.column(col, {search: 'applied'}).cache('search').unique();
     },
 
     /**
