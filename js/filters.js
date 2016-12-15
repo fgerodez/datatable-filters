@@ -19,15 +19,15 @@ var Filters = function (settings) {
     var builders = this.builders;
     var renderCol = 0;
     $.each(settings.aoColumns, function (col, param) {
-        if (param.filter) {
-            var options = $.extend({
-              column: col,
-              renderColumn: renderCol
-            }, param.filter);
-            filters.push(builders[param.filter.type](options));
-        }
         if(param.bVisible) {
-          renderCol++;
+            if (param.filter) {
+                var options = $.extend({
+                    column: col,
+                    renderColumn: renderCol
+                }, param.filter);
+                filters.push(builders[param.filter.type](options));
+            }
+            renderCol++;
         }
     });
 
