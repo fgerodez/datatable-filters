@@ -12,6 +12,9 @@ var $ = require('jquery');
  */
 var Filters = function (settings) {
     this.tableAPI = new $.fn.dataTable.Api(settings);
+    this.options = $.extend({
+        updater: 'none'
+    }, this.tableAPI.init().filters);
     this.$header = $(this.tableAPI.table().header());
     this.url = this.tableAPI.ajax.url();
 
@@ -31,6 +34,8 @@ var Filters = function (settings) {
         }
     }, this);
 
+    $.extend(this, this.updaters[this.options.updater]);
+
     if (this.filters.length > 0) {
         this.tableAPI.on('init', this.onDataTableInit.bind(this));
     }
@@ -43,6 +48,12 @@ $.extend(Filters.prototype, {
      * takes a setting object as its single parameter
      */
     builders: {},
+
+    /**
+     * Array of updater constructor function.
+     * Each function take the filters to update as its single parameter
+     */
+    updaters: {},
 
     /**
      * Table header dom node
@@ -153,7 +164,9 @@ $.extend(Filters.prototype, {
      * @return {Filters}
      */
     onClientFilterChange: function (event, params) {
-        this.applyFilter(params.filter).drawTable();
+        this.applyFilter(params.filter)
+            .refreshAllFilters(params.filter)
+            .drawTable();
 
         return this;
     },
@@ -258,7 +271,7 @@ $.extend(Filters.prototype, {
         this.drawTable();
 
         return this;
-    }
+    },
 });
 
 $(document).on('preInit.dt', function (e, settings) {
