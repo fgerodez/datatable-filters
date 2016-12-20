@@ -15,6 +15,7 @@ var Filters = function (settings) {
     this.$header = $(this.tableAPI.table().header());
     this.url = this.tableAPI.ajax.url();
 
+    var filters = [];
     settings.aoColumns.forEach(function (param, col) {
         if (param.filter && param.bVisible) {
             var options = $.extend({
@@ -27,11 +28,12 @@ var Filters = function (settings) {
             filter.init();
 
             this.applyInitialFilter(filter);
-            this.filters.push(filter);
+            filters.push(filter);
         }
     }, this);
 
-    if (this.filters.length > 0) {
+    if (filters.length > 0) {
+        this.filters = filters;
         this.tableAPI.on('init', this.onDataTableInit.bind(this));
     }
 };
@@ -43,24 +45,6 @@ $.extend(Filters.prototype, {
      * takes a setting object as its single parameter
      */
     builders: {},
-
-    /**
-     * Table header dom node
-     * @type {jQuery}
-     */
-    $header: null,
-
-    /**
-     * Filters array
-     * @type {Array}
-     */
-    filters: [],
-
-    /**
-     * Table initial ajax URL
-     * @type {String}
-     */
-    url: '',
 
     /**
      * Refreshes filters after each ajax request
