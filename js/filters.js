@@ -3,7 +3,7 @@
 var $ = require('jquery');
 
 /**
- * Filters is a component that manages a list of filters object inside
+ * Filters is a component that manages a list of filter objects inside
  * a datatable header row.
  *
  * This constructor binds listeners to various datatable events.
@@ -14,6 +14,11 @@ var Filters = function (settings) {
     this.tableAPI = new $.fn.dataTable.Api(settings);
     this.$header = $(this.tableAPI.table().header());
     this.url = this.tableAPI.ajax.url();
+
+    this.options = $.extend({
+        updater: 'none'
+    }, this.tableAPI.init().filters);
+
 
     var filters = [];
     settings.aoColumns.forEach(function (param, col) {
@@ -32,6 +37,8 @@ var Filters = function (settings) {
         }
     }, this);
 
+    $.extend(this, this.updaters[this.options.updater]);
+
     if (filters.length > 0) {
         this.filters = filters;
         this.tableAPI.on('init', this.onDataTableInit.bind(this));
@@ -45,6 +52,12 @@ $.extend(Filters.prototype, {
      * takes a setting object as its single parameter
      */
     builders: {},
+
+    /**
+     * Array of updater constructor function.
+     * Each function takes the filter to update as its single parameter
+     */
+    updaters: {},
 
     /**
      * Refreshes filters after each ajax request
@@ -137,7 +150,9 @@ $.extend(Filters.prototype, {
      * @return {Filters}
      */
     onClientFilterChange: function (event, params) {
-        this.applyFilter(params.filter).drawTable();
+        this.applyFilter(params.filter)
+            .refreshAllFilters(params.filter)
+            .drawTable();
 
         return this;
     },
@@ -220,11 +235,11 @@ $.extend(Filters.prototype, {
         }
 
         filter.render($container, $colHeader.html(), this.getColumnData(col));
-        if(filter.className) {
-          filter.$dom.addClass(filter.className);
+        if (filter.className) {
+            filter.$dom.addClass(filter.className);
         }
-        if(filter.attrs) {
-          filter.$dom.attr(filter.attrs);
+        if (filter.attrs) {
+            filter.$dom.attr(filter.attrs);
         }
     },
 
@@ -242,7 +257,7 @@ $.extend(Filters.prototype, {
         this.drawTable();
 
         return this;
-    }
+    },
 });
 
 $(document).on('preInit.dt', function (e, settings) {
