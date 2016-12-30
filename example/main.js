@@ -1,5 +1,8 @@
 $(document).ready(function () {
         var table = $('#exampleTable').DataTable({
+            filters: {
+                updater: 'others'
+            },
             ajax: {
                 url: "./data.json"
             },
@@ -9,7 +12,6 @@ $(document).ready(function () {
                     data: 'email',
                     filter: {
                         type: 'select',
-                        renderer: 'bootstrap',
                         allText: 'All emails'
                     }
                 },
@@ -24,7 +26,6 @@ $(document).ready(function () {
                     data: 'gender',
                     filter: {
                         type: 'multiselect',
-                        renderer: 'bootstrap',
                         rendererOptions: {
                           selectAllText: 'All',
                           includeSelectAllOption: true
@@ -38,7 +39,6 @@ $(document).ready(function () {
                     data: 'company',
                     filter: {
                         type: 'multiselect',
-                        renderer: 'bootstrap',
                         showFilter: function ($dom) {
                             $('#cityFilter').append($dom);
                         }
