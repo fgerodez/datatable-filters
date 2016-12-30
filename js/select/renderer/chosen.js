@@ -1,5 +1,4 @@
 'use strict';
-var $ = require('jquery');
 
 var ChosenRenderer = {
     render: function ($container, header, data) {
@@ -10,7 +9,7 @@ var ChosenRenderer = {
         return this;
     },
 
-    showFilter: function($dom, $container, header, data) {
+    showFilter: function($dom, $container) {
         $container.append(this.$dom);
     },
 

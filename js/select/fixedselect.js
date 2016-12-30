@@ -9,7 +9,7 @@ var FixedSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
     /**
      * Simply saves a handle on the provided source select
      *
-     * @returns {FixedSelectFilter}
+     * @returns {FixedSelectFilter} The select filter
      */
     init: function () {
         this.$dom = $(this.src);
@@ -21,7 +21,7 @@ var FixedSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
     /**
      * No action for fixed filters: the provided select is used as is
      *
-     * @returns {FixedSelectFilter}
+     * @returns {FixedSelectFilter} The Filter object
      */
     populate: function () {
         return this;
@@ -30,7 +30,7 @@ var FixedSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
     /**
      * No update for fixed filters: the provided select is never changed
      *
-     * @returns {FixedSelectFilter}
+     * @returns {FixedSelectFilter} The Filter object
      */
     update: function () {
         return this;
@@ -40,7 +40,7 @@ var FixedSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
      * Fixed filters can be used to provide initial filters to apply to the
      * datatable.
      *
-     * @returns {*|String}
+     * @returns {String} The Filter query
      */
     getInitialQuery: function() {
         return this.getQuery();

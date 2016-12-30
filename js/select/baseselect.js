@@ -40,7 +40,7 @@ var SelectFilter = $.extend({}, BaseFilter, {
      */
     selectedQuery: function () {
         return this._getSelection().map(function (value) {
-            if (value == this.allText  || this._getNotSelected().length === 0) {
+            if (value == this.allText || this._getNotSelected().length === 0) {
                 return '';
             } else {
                 return '^' + $.fn.dataTable.util.escapeRegex(value) + '$';
@@ -52,7 +52,9 @@ var SelectFilter = $.extend({}, BaseFilter, {
      * Filters the options before adding them to the select. Can be overridden
      * for specific filtering
      *
-     * @param value {String} Option value
+     * @param {String} value The option value
+     *
+     * @returns {Boolean} True if the value can be included in the filter options. False otherwise.
      */
     filterOptions: function (value) {
         return value.trim() != '';
@@ -61,6 +63,11 @@ var SelectFilter = $.extend({}, BaseFilter, {
     /**
      * Sort the options before adding them to the select. Can be overridden for
      * specific sorts
+     *
+     * @param {String} a The first value to compare
+     * @param {String} b The second value to compare
+     *
+     * @return {Integer} 0 if the two values are equal, 1 if a > b and -1 if a < b
      */
     sortOptions: function (a, b) {
         if (a > b) {
@@ -79,7 +86,7 @@ var SelectFilter = $.extend({}, BaseFilter, {
      * @private
      */
     _getSelection: function () {
-        return this.$dom.find('option:selected').toArray().map(function(option) {
+        return this.$dom.find('option:selected').toArray().map(function (option) {
             return option.value;
         });
     },
@@ -89,8 +96,8 @@ var SelectFilter = $.extend({}, BaseFilter, {
      * @returns {*|Array} The array of non selected values
      * @private
      */
-    _getNotSelected: function() {
-        return this.$dom.find(':not(option:selected)').toArray().map(function(option) {
+    _getNotSelected: function () {
+        return this.$dom.find(':not(option:selected)').toArray().map(function (option) {
             return option.value;
         });
     },
@@ -99,8 +106,8 @@ var SelectFilter = $.extend({}, BaseFilter, {
      * For each element in the data object, creates an option element using the function
      * fnCreate
      *
-     * @param data {jQuery} The data to add to the select
-     * @param fnCreate {Function} The function to use to create the options
+     * @param {jQuery} data The data to add to the select
+     * @param {Function} fnCreate The function to use to create the options
      * @private
      */
     _addOptions: function (data, fnCreate) {
@@ -115,14 +122,14 @@ var SelectFilter = $.extend({}, BaseFilter, {
     /**
      * Creates a selected option
      *
-     * @param value {String} The option value
+     * @param {String} value The option value
      * @private
      */
     _addSelectedOption: function (value) {
         this.$dom.append($('<option/>')
-            .val(value)
-            .text(value)
-            .attr('selected', 'selected')
+                .val(value)
+                .text(value)
+                .attr('selected', 'selected')
         );
     },
 
@@ -130,7 +137,7 @@ var SelectFilter = $.extend({}, BaseFilter, {
      * Creates an option with the selected flag based on the
      * current filter state
      *
-     * @param value {String} The option value
+     * @param {String} value The option value
      * @private
      */
     _refreshOption: function (value) {
@@ -149,7 +156,7 @@ var SelectFilter = $.extend({}, BaseFilter, {
      *
      * @private
      */
-    _saveSelection: function() {
+    _saveSelection: function () {
         this.selected = this._getSelection();
     },
 
@@ -159,18 +166,18 @@ var SelectFilter = $.extend({}, BaseFilter, {
      *
      * @private
      */
-    _onChange: function() {
+    _onChange: function () {
         this._saveSelection();
         this.notifyChange();
     }
 });
 
- var availableRenderers = {
+var availableRenderers = {
     'bootstrap': BootstrapRenderer,
     'chosen': ChosenRender
 };
 
-var builder = function(settings) {
+var builder = function (settings) {
     var renderer = availableRenderers[settings.renderer] || SimpleRenderer;
 
     return $.extend({}, this, renderer, settings);

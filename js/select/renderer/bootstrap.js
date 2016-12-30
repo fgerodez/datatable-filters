@@ -9,7 +9,7 @@ var BootstrapRenderer = {
         var defaultOptions = {
             buttonText: function (options) {
                 var nbSelected = $(options).filter(':selected').length;
-                if(nbSelected == 0) {
+                if (nbSelected == 0) {
                     return header;
                 }
                 return header + ' (' + nbSelected + ')';
@@ -21,7 +21,7 @@ var BootstrapRenderer = {
         return this;
     },
 
-    showFilter: function($dom, $container, header, data) {
+    showFilter: function ($dom, $container) {
         $container.append(this.$dom);
     },
 

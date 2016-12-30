@@ -1,15 +1,14 @@
 'use strict';
 
-var $ = require('jquery');
 var Filters = require('../filters');
 
 /**
  * Dummy updater
  */
 var UpdateNone = {
-    refreshAllFilters: function (filter) {
+    refreshAllFilters: function () {
         return this;
     }
-}
+};
 
 Filters.prototype.updaters.none = UpdateNone;

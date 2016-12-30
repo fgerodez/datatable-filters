@@ -8,44 +8,47 @@ var $ = require('jquery');
  *
  * This constructor binds listeners to various datatable events.
  *
- * @param settings {Object} settings object used to create the datatable
+ * @param {Object} settings object used to create the datatable
  */
 var Filters = function (settings) {
     this.tableAPI = new $.fn.dataTable.Api(settings);
     this.$header = $(this.tableAPI.table().header());
     this.url = this.tableAPI.ajax.url();
 
-    this.options = $.extend({
-        updater: 'none'
-    }, this.tableAPI.init().filters);
-
-
-    var filters = [];
-    settings.aoColumns.forEach(function (param, col) {
-        if (param.filter && param.bVisible) {
-            var options = $.extend({
-                column: col,
-                renderColumn: this.tableAPI.column.index('toVisible', col)
-            }, param.filter);
-
-            var filter = this.builders[param.filter.type](options);
-
-            filter.init();
-
-            this.applyInitialFilter(filter);
-            filters.push(filter);
-        }
-    }, this);
-
+    this.options = $.extend({}, this.defaultSettings, this.tableAPI.init().filters);
     $.extend(this, this.updaters[this.options.updater]);
 
-    if (filters.length > 0) {
-        this.filters = filters;
+    this.filters = settings.aoColumns.filter(function (param) {
+        return param.filter && param.bVisible;
+    }).map(function (param) {
+        var options = $.extend({
+            column: param.idx,
+            renderColumn: this.tableAPI.column.index('toVisible', param.idx)
+        }, param.filter);
+
+        var filter = this.builders[param.filter.type](options);
+
+        filter.init();
+
+        if (param.filter.className) {
+            filter.addClass(param.filter.className);
+        }
+
+        if (param.filter.attrs) {
+            filter.addAttributes(param.filter.attrs);
+        }
+
+        this.applyInitialFilter(filter);
+
+        return filter;
+    }, this);
+
+    if (this.filters.length > 0) {
         this.tableAPI.on('init', this.onDataTableInit.bind(this));
     }
 };
 
-$.extend(Filters.prototype, {
+Filters.prototype = {
 
     /**
      * Array of filter constructor function. Each function
@@ -60,14 +63,21 @@ $.extend(Filters.prototype, {
     updaters: {},
 
     /**
+     * Array of default settings for the Filter object
+     */
+    defaultSettings: {
+        updater: 'none'
+    },
+
+    /**
      * Refreshes filters after each ajax request
      *
-     * @returns {Filters}
+     * @returns {Filters} The Filters object
      */
     registerAjaxListener: function () {
-        this.tableAPI.on('xhr', $.proxy(function () {
-            this.tableAPI.one('preDraw', $.proxy(this.refreshFilters, this));
-        }, this));
+        this.tableAPI.on('xhr', function () {
+            this.tableAPI.one('preDraw', this.refreshFilters.bind(this));
+        }.bind(this));
 
         return this;
     },
@@ -81,13 +91,13 @@ $.extend(Filters.prototype, {
      * filters when their value is modified by the user (or any other event that
      * should trigger a datatable filter).
      *
-     * @returns {Filters}
+     * @returns {Filters} The Filters object
      */
     setupHeaderRow: function () {
-        var $filterHeader = $('<tr class="filters"></tr>');
+        var $filterHeader = $('<tr class="datatable-filters-header"></tr>');
 
         this.tableAPI.columns(':visible').header().each(function () {
-            $filterHeader.append('<th class="fond-header"></th>');
+            $filterHeader.append('<th></th>');
         });
 
         this.$header.append($filterHeader);
@@ -98,7 +108,7 @@ $.extend(Filters.prototype, {
     /**
      * Redraws the datatable
      *
-     * @returns {Filters}
+     * @returns {Filters} The Filters object
      */
     drawTable: function () {
         this.tableAPI.draw();
@@ -109,23 +119,23 @@ $.extend(Filters.prototype, {
     /**
      * Retrieves the column data (current filter is ignored)
      *
-     * @param col {int} The column index (0 based)
+     * @param {int} col The column index (0 based)
      *
      * @return {jQuery} The unfiltered column rendered data
      */
     getColumnData: function (col) {
-        return this.tableAPI.column(col).cache('search').unique();
+        return this.tableAPI.column(col).data().unique();
     },
 
     /**
      * Retrieves the column filtered data
      *
-     * @param col {int} The column index (0 based)
+     * @param {int} col The column index (0 based)
      *
      * @return {jQuery} The filtered column data
      */
     getFilteredColumnData: function (col) {
-        return this.tableAPI.column(col, {search: 'applied'}).cache('search').unique();
+        return this.tableAPI.column(col, {search: 'applied'}).data().unique();
     },
 
     /**
@@ -133,7 +143,7 @@ $.extend(Filters.prototype, {
      * Creates the filter header row, registers ajax listeners and
      * renders filters
      *
-     * @returns {Filters}
+     * @returns {Filters} The Filters object
      */
     onDataTableInit: function () {
         this.setupHeaderRow().registerAjaxListener().renderFilters();
@@ -144,10 +154,10 @@ $.extend(Filters.prototype, {
     /**
      * When a client-side filter changes, applies its new value
      *
-     * @param event {Event} event object
-     * @param params {Object} event params
+     * @param {Event} event The event object
+     * @param {Object} params The event params
      *
-     * @return {Filters}
+     * @return {Filters} The Filters object
      */
     onClientFilterChange: function (event, params) {
         this.applyFilter(params.filter)
@@ -160,10 +170,10 @@ $.extend(Filters.prototype, {
     /**
      * When a server-side filter changes, builds the new ajax query and refreshes the table
      *
-     * @return {Filters}
+     * @return {Filters} The Filters object
      */
     onServerFilterChange: function () {
-        var serverQuery = $.grep(this.filters, function (filter) {
+        var serverQuery = this.filters.filter(function (filter) {
             return filter.isServerSide();
         }).map(function (filter) {
             return filter.getServerQuery();
@@ -177,9 +187,9 @@ $.extend(Filters.prototype, {
     /**
      * Applies the filter value to the related column
      *
-     * @param filter The filter object
+     * @param {BaseFilter} filter The filter object
      *
-     * @return {Filters}
+     * @return {Filters} The Filters object
      */
     applyFilter: function (filter) {
         this.tableAPI.column(filter.column).search(
@@ -194,8 +204,9 @@ $.extend(Filters.prototype, {
      * Enables filters to apply an initial column filter, before
      * any data processing/displaying is done.
      *
-     * @param filter
-     * @returns {Filters}
+     * @param {BaseFilter} filter The filter object
+     *
+     * @returns {Filters} The Filters object
      */
     applyInitialFilter: function (filter) {
         this.tableAPI.column(filter.column).search(
@@ -209,7 +220,7 @@ $.extend(Filters.prototype, {
     /**
      * @see this.renderFilter
      *
-     * @returns {Filters}
+     * @returns {Filters} The Filters object
      */
     renderFilters: function () {
         this.filters.forEach(this.renderFilter, this);
@@ -221,32 +232,26 @@ $.extend(Filters.prototype, {
      * Asks a filter to render itself and provides an optional container
      * for filters that need to be rendered inside the datatable header row
      *
-     * @param filter The filter object
+     * @param {BaseFilter} filter The filter object
      */
     renderFilter: function (filter) {
         var col = filter.column;
         var $colHeader = $(this.tableAPI.column(col).header());
-        var $container = this.$header.find('.fond-header:eq(' + filter.renderColumn + ')');
+        var $container = this.$header.find('.datatable-filters-header th:eq(' + filter.renderColumn + ')');
 
         if (filter.isServerSide()) {
-            filter.register($.proxy(this.onServerFilterChange, this));
+            filter.register(this.onServerFilterChange.bind(this));
         } else {
-            filter.register($.proxy(this.onClientFilterChange, this));
+            filter.register(this.onClientFilterChange.bind(this));
         }
 
         filter.render($container, $colHeader.html(), this.getColumnData(col));
-        if (filter.className) {
-            filter.$dom.addClass(filter.className);
-        }
-        if (filter.attrs) {
-            filter.$dom.attr(filter.attrs);
-        }
     },
 
     /**
      * Refreshes the filters based on the currently displayed data for each column
      *
-     * @return {Filters}
+     * @return {Filters} The Filters object
      */
     refreshFilters: function () {
         this.filters.forEach(function (filter) {
@@ -257,8 +262,8 @@ $.extend(Filters.prototype, {
         this.drawTable();
 
         return this;
-    },
-});
+    }
+};
 
 $(document).on('preInit.dt', function (e, settings) {
     new Filters(settings);

@@ -9,7 +9,7 @@ var SimpleSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
     /**
      * Creates a simple select
      *
-     * @returns {SimpleSelectFilter}
+     * @returns {SimpleSelectFilter} The Filter object
      */
     init: function () {
         this.$dom = $('<select class="filtre"/>');
@@ -23,8 +23,9 @@ var SimpleSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
      * If an option with `getInitialQuery` value exists, selects it,
      * otherwise, the first option is selected by default
      *
-     * @param data
-     * @returns {SimpleSelectFilter}
+     * @param {Array<String>} data The column data
+     *
+     * @returns {SimpleSelectFilter} The filter object
      */
     populate: function (data) {
         this._addOptions(data, this._refreshOption);
@@ -38,8 +39,9 @@ var SimpleSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
     /**
      * Refresh the options based on the filter state
      *
-     * @param data
-     * @returns {SimpleSelectFilter}
+     * @param {Array<String>} data The column data
+     *
+     * @returns {SimpleSelectFilter} The filter object
      */
     update: function (data) {
         this._addOptions(data, this._refreshOption);
@@ -50,7 +52,7 @@ var SimpleSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
     /**
      * This filter is dynamic, it can't be used for initial filtering
      *
-     * @returns {string}
+     * @returns {String} The filter's initial query
      */
     getInitialQuery: function() {
         return '';

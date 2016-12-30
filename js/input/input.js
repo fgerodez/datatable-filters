@@ -44,8 +44,8 @@ var InputFilter = $.extend({}, BaseFilter, SimpleRenderer, {
     }
 });
 
-Filters.prototype.builders.input = function(settings) {
-  return $.extend({}, InputFilter, settings);
+Filters.prototype.builders.input = function (settings) {
+    return $.extend({}, InputFilter, settings);
 };
 
 module.exports = InputFilter;

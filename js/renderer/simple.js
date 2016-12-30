@@ -1,7 +1,5 @@
 'use strict';
 
-var $ = require('jquery');
-
 var SimpleRenderer = {
     render: function ($container, header, data) {
         this.populate(data);
@@ -10,7 +8,7 @@ var SimpleRenderer = {
         return this;
     },
 
-    showFilter: function($dom, $container, header, data) {
+    showFilter: function($dom, $container, header) {
         $container.append(this.$dom);
         this.$dom.attr('name', header).attr('placeholder', header).show();
     },
