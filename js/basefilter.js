@@ -5,6 +5,18 @@
  */
 var BaseFilter = {
 
+    initialize: function () {
+        this.init();
+
+        if (this.className) {
+            this.addClass(this.className);
+        }
+
+        if (this.attrs) {
+            this.addAttributes(this.attrs);
+        }
+    },
+
     /**
      * @returns {Boolean} Whether a filter change must trigger a datatable reload.
      * Default is false (client side filter).
@@ -82,6 +94,18 @@ var BaseFilter = {
         this.$dom.attr(attrs);
 
         return this;
+    },
+
+    /**
+     * Remove the filter from the DOM.
+     * Reset the filter's value before removing to disable filtering for this column.
+     */
+    remove: function () {
+        this.reset();
+        this.notifyChange();
+
+        this.$dom.remove();
+        delete this.$dom;
     }
 };
 

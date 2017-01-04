@@ -61,6 +61,18 @@ var SelectFilter = $.extend({}, BaseFilter, {
     },
 
     /**
+      * Reset the filter by select none option,
+      * so the filter will keep every rows
+      * @returns {SelectFilter} The Filter object
+      */
+    reset: function () {
+        this.$dom.find('option').removeAttr('selected');
+        this._saveSelection();
+
+        return this;
+    },
+
+    /**
      * Sort the options before adding them to the select. Can be overridden for
      * specific sorts
      *

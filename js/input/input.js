@@ -41,7 +41,19 @@ var InputFilter = $.extend({}, BaseFilter, SimpleRenderer, {
 
     getInitialQuery: function () {
         return '';
+    },
+
+    /**
+      * Reset the filter's input,
+      * so the filter will keep every rows
+      * @returns {InputFilter} The Filter object
+      */
+    reset: function () {
+        this.$dom.val('');
+
+        return this;
     }
+
 });
 
 Filters.prototype.builders.input = function (settings) {
