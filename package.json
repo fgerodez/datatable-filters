@@ -3,7 +3,7 @@
   "description": "A datatable filter module",
   "author": "Ouzned <francois@mahoneko.net>",
   "repository": "https://github.com/Ouzned/datatable-filters",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "files": [
     "js/"
   ],
