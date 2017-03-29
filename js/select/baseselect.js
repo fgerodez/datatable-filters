@@ -50,14 +50,15 @@ var SelectFilter = $.extend({}, BaseFilter, {
 
     /**
      * Filters the options before adding them to the select. Can be overridden
-     * for specific filtering
+     * for specific filtering.
+     * By default, use the value as option if `value` if a non empty string.
      *
      * @param {String} value The option value
      *
      * @returns {Boolean} True if the value can be included in the filter options. False otherwise.
      */
     filterOptions: function (value) {
-        return value.trim() != '';
+        return value && value.trim() != '';
     },
 
     /**
