@@ -94,10 +94,10 @@ Filters.prototype = {
      * @returns {Filters} The Filters object
      */
     setupHeaderRow: function () {
-        var $filterHeader = $('<tr class="datatable-filters-header"></tr>');
+        var $filterHeader = $('<tr class="datatable-filters-header filters"></tr>');
 
         this.tableAPI.columns(':visible').header().each(function () {
-            $filterHeader.append('<th></th>');
+            $filterHeader.append('<th class="fond-header"></th>');
         });
 
         this.$header.append($filterHeader);
