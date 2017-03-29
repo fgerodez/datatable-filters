@@ -11,6 +11,7 @@ var $ = require('jquery');
  * @param {Object} settings object used to create the datatable
  */
 var Filters = function (settings) {
+    this.settings = settings;
     this.tableAPI = new $.fn.dataTable.Api(settings);
     this.$header = $(this.tableAPI.table().header());
     this.url = this.tableAPI.ajax.url();
@@ -19,7 +20,7 @@ var Filters = function (settings) {
     $.extend(this, this.updaters[this.options.updater]);
 
     this.filters = settings.aoColumns.filter(function (param) {
-        return param.filter && param.bVisible;
+        return param.filter;
     }).map(function (param) {
         var options = $.extend({
             column: param.idx,
@@ -28,17 +29,9 @@ var Filters = function (settings) {
 
         var filter = this.builders[param.filter.type](options);
 
-        filter.init();
+        filter.initialize();
 
-        if (param.filter.className) {
-            filter.addClass(param.filter.className);
-        }
-
-        if (param.filter.attrs) {
-            filter.addAttributes(param.filter.attrs);
-        }
-
-        this.applyInitialFilter(filter);
+        this.applyFilter(filter);
 
         return filter;
     }, this);
@@ -94,13 +87,16 @@ Filters.prototype = {
      * @returns {Filters} The Filters object
      */
     setupHeaderRow: function () {
-        var $filterHeader = $('<tr class="datatable-filters-header filters"></tr>');
+        this.$filterHeader = $('<tr class="datatable-filters-header filters"></tr>');
 
-        this.tableAPI.columns(':visible').header().each(function () {
-            $filterHeader.append('<th class="fond-header"></th>');
-        });
+        this.settings.aoColumns.filter(function (column) {
+            return column.bVisible;
+        })
+        .forEach(function () {
+            this.$filterHeader.append('<th></th>');
+        }, this);
 
-        this.$header.append($filterHeader);
+        this.$header.append(this.$filterHeader);
 
         return this;
     },
@@ -147,6 +143,38 @@ Filters.prototype = {
      */
     onDataTableInit: function () {
         this.setupHeaderRow().registerAjaxListener().renderFilters();
+
+        this.tableAPI.on( 'column-visibility.dt', function ( e, settings, column, visible ) {
+            // Find the filter associated to the column
+            var filter = this.filters.find(function (filter) {
+                return filter.column === column;
+            });
+
+            // Find the column index into the DOM
+            var renderColumn = settings.aoColumns.slice(0, column)
+            .reduce(function (acc, column) {
+                return column.bVisible ? acc + 1 : acc;
+            }, 0);
+
+            if(visible) {
+                this.createFilterWrapper(renderColumn);
+
+                if(filter) {
+                    // FIX: if a filter was hidden at the startup, so it doesn't have renderColumn setted,
+                    // So we need to re-compute it
+                    filter.renderColumn = this.tableAPI.column.index('toVisible', filter.column);
+
+                    filter.initialize();
+                    this.renderFilter(filter);
+                }
+            } else {
+                if(filter) {
+                    filter.remove();
+                }
+
+                this.removeFilterWrapper(renderColumn);
+            }
+        }.bind(this));
 
         return this;
     },
@@ -201,23 +229,6 @@ Filters.prototype = {
     },
 
     /**
-     * Enables filters to apply an initial column filter, before
-     * any data processing/displaying is done.
-     *
-     * @param {BaseFilter} filter The filter object
-     *
-     * @returns {Filters} The Filters object
-     */
-    applyInitialFilter: function (filter) {
-        this.tableAPI.column(filter.column).search(
-            filter.getInitialQuery(),
-            filter.isRegexMatch()
-            , false);
-
-        return this;
-    },
-
-    /**
      * @see this.renderFilter
      *
      * @returns {Filters} The Filters object
@@ -260,6 +271,33 @@ Filters.prototype = {
         }, this);
 
         this.drawTable();
+
+        return this;
+    },
+
+    /**
+     * Create a filter's header cell
+     * @param {number} index the index of the cell to create
+     * @return {Filters} The Filters object
+     */
+    createFilterWrapper: function (index) {
+        if(index === 0) {
+            this.$filterHeader.prepend('<th/>');
+        } else {
+            this.$filterHeader.find('th:eq(' + (index - 1) + ')')
+            .after('<th/>');
+        }
+
+        return this;
+    },
+
+    /**
+     * Remove a filter's header cell
+     * @param {number} index the index of the cell to remove
+     * @return {Filters} The Filters object
+     */
+    removeFilterWrapper: function (index) {
+        this.$filterHeader.find('th:eq(' + index + ')').remove();
 
         return this;
     }

@@ -16,24 +16,34 @@
     <div style="margin-bottom: 20px;">
         <button id="reloadAjax">Reload the table (adds Bill Gates)</button>
     </div>
-    <table id="exampleTable">
-        <thead>
-        <tr>
-            <th>
-                Email
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Gender
-            </th>
-            <th>
-                Company
-            </th>
-        </tr>
-        </thead>
-    </table>
+    <div style="margin-bottom: 20px;">
+        <button class="toggleColumn" data-column="0">toggle Email</button>
+        <button class="toggleColumn" data-column="1">toggle Name</button>
+        <button class="toggleColumn" data-column="2">toggle Gender</button>
+        <button class="toggleColumn" data-column="3">toggle Company</button>
+
+        <button id="showHideDT">toggle DataTable visibility</button>
+    </div>
+    <div id="exampleTableContent">
+        <table id="exampleTable">
+            <thead>
+            <tr>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Gender
+                </th>
+                <th>
+                    Company
+                </th>
+            </tr>
+            </thead>
+        </table>
+    </div>
 </div>
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.10/js/jquery.dataTables.min.js"></script>
