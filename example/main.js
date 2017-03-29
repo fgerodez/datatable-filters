@@ -26,6 +26,10 @@ $(document).ready(function () {
                     data: 'gender',
                     filter: {
                         type: 'multiselect',
+                        renderer: 'bootstrap',
+                        getInitialQuery: function () {
+                            return 'male';
+                        },
                         rendererOptions: {
                           selectAllText: 'All',
                           includeSelectAllOption: true

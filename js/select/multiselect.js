@@ -31,13 +31,13 @@ var MultiSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
 
         // Select each values returned by getInitialQuery
         var initialQuery = this.getInitialQuery();
-
-        if (Array.isArray(initialQuery)) {
-            initialQuery.forEach(function (initialQuery) {
-                this.$dom.find('option[value="' + initialQuery + '"]').attr('selected', 'selected');
-            }.bind(this));
-        } else { // Assume initial query is a string
-            this.$dom.find('option[value="' + initialQuery + '"]').attr('selected', 'selected');
+        if(initialQuery) {
+            this._unselectAllOptions();
+            if(Array.isArray(initialQuery)) {
+                initialQuery.forEach(this._selectOption.bind(this));
+            } else { // Asume initial query is a non empty string
+                this._selectOption(initialQuery);
+            }
         }
 
         this._saveSelection();
@@ -70,6 +70,21 @@ var MultiSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
      */
     getInitialQuery: function () {
         return '';
+    },
+
+    /**
+     * remove all selected options
+     */
+    _unselectAllOptions: function () {
+        this.$dom.find('option:selected').prop('selected', false);
+    },
+
+    /**
+     * find an option by its value, and select it
+     * @param {String} value option's value
+     */
+    _selectOption: function (value) {
+        this.$dom.find('option[value="' + value + '"]').prop('selected', true);
     }
 });
 
