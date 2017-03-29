@@ -85,6 +85,21 @@ var MultiSelectFilter = $.extend({}, BaseSelect.SelectFilter, {
      */
     _selectOption: function (value) {
         this.$dom.find('option[value="' + value + '"]').prop('selected', true);
+    },
+
+    /**
+     * Reset the filter by select all options,
+     * so the filter will keep every rows
+     * @returns {MultiSelectFilter} The Filter object
+     */
+    reset: function () {
+        var allValues = this.$dom.find('option').get().map(function (option) {
+            return option.value;
+        });
+        this.$dom.val(allValues);
+        this._saveSelection();
+
+        return this;
     }
 });
 
