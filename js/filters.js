@@ -93,7 +93,7 @@ Filters.prototype = {
             return column.bVisible;
         })
         .forEach(function () {
-            this.$filterHeader.append('<th></th>');
+            this.$filterHeader.append('<th class="fond-header"></th>');
         }, this);
 
         this.$header.append(this.$filterHeader);
